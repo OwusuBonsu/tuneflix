@@ -1,25 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useQuery, QueryClient } from "react-query";
+import axios from "axios";
+import PopularArtists from "./PopularArtists";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const { isLoading, error, topArtists } = useQuery("fetchArtists", () =>
+    axios(
+      "https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=106089bc8ef07ebb20e19f75f7557606&format=json"
+    )
   );
+  if (isLoading) return "Loading...";
+  if (error) return "An error has occurred: " + error.message;
+
+  console.log(topArtists);
+
+  return <div>{topArtists.data.artists.artist.map}</div>;
 }
 
 export default App;
