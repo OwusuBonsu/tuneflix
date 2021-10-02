@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { Link, BrowserRouter as Router, Route } from "react-router-dom";
 import Homepage from "./Homepage";
 import {
   RecoilRoot,
@@ -11,14 +11,17 @@ import {
   useRecoilState,
   useRecoilValue,
 } from "recoil";
-import TopSingles from "./TopSingles";
+import ArtistPage from "./ArtistPage";
 import Searchbar from "./Searchbar";
 
 ReactDOM.render(
   <RecoilRoot>
     <React.StrictMode>
       <Searchbar />
-      <Homepage />
+      <Router>
+        <Route exact path="/" component={Homepage} />
+        <Route path="/artist/:artistID" component={ArtistPage} />
+      </Router>
     </React.StrictMode>
   </RecoilRoot>,
   document.getElementById("root")

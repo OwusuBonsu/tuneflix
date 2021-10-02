@@ -3,6 +3,7 @@ import qs from "qs";
 import { useCallback, useState, useEffect } from "react";
 import { atom, useRecoilState } from "recoil";
 import { Textfit } from "react-textfit";
+import { Link } from "react-router-dom";
 
 export default function PopularArtists() {
   const [artistState, getArtists] = useState([]);
@@ -64,8 +65,6 @@ export default function PopularArtists() {
     if (popularArtists === undefined) {
       return null;
     } else {
-      console.log(spotifyToken);
-      console.log(popularArtists);
       var tempArray = [];
       popularArtists.map((artist) => {
         axios
@@ -76,9 +75,11 @@ export default function PopularArtists() {
             tokenHeader
           )
           .then((res) => {
+            console.log(res);
             var artistsObject = {
               name: artist.name,
               image: res.data.artists.items[0].images[0].url,
+              id: res.data.artists.items[0].id,
             };
             tempArray.push(artistsObject);
           })
@@ -104,19 +105,21 @@ export default function PopularArtists() {
       </p>
       <div className="flex flex-nowrap flex-row overflow-x-scroll bg-gray-800 m-3 py-3 px-6 no-scrollbar bg-opacity-60 rounded-3xl ">
         {artistState.map((artist) => (
-          <div className="grid grid-cols-1 h-72 w-60 mx-3 flex-shrink-0">
-            <div className="flex justify-center mx-auto min-h-full w-60 min-w-full">
-              <div className="flex min-h-full content-center text-center text-white">
-                <Textfit mode="single">{artist.name}</Textfit>
+          <Link to={`/artist/${artist.id}`}>
+            <div className="grid grid-cols-1 h-72 w-60 mx-3 flex-shrink-0">
+              <div className="flex justify-center mx-auto min-h-full w-60 min-w-full">
+                <div className="flex min-h-full content-center text-center text-white">
+                  <Textfit mode="single">{artist.name}</Textfit>
+                </div>
+              </div>
+              <div className=" h-full  min-w-full overflow-hidden">
+                <img
+                  className="rounded-full mx-auto max-h-60 h-full min-w-full"
+                  src={artist.image}
+                ></img>
               </div>
             </div>
-            <div className=" h-full  min-w-full overflow-hidden">
-              <img
-                className="rounded-full mx-auto max-h-60 h-full min-w-full"
-                src={artist.image}
-              ></img>
-            </div>
-          </div>
+          </Link>
         ))}
       </div>
     </>
