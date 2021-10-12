@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 
 export default function PopularArtists() {
   const [artistState, getArtists] = useState([]);
-  const [popularArtists, getPopularArtists] = useState();
+  const [popularArtists, getPopularArtists] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const tokenState = atom({
     key: "tokenState",
@@ -35,8 +36,20 @@ export default function PopularArtists() {
     },
   };
 
-  //Get Spotify Token. SHOULD RUN FIRST
+  //Get most popular artists from Last.FM, save to state
   useEffect(() => {
+    axios
+      .get(
+        "https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=106089bc8ef07ebb20e19f75f7557606&limit=10&format=json"
+      )
+      .then((res) => {
+        getPopularArtists(res.data.artists.artist);
+        getToken();
+      });
+  }, []);
+
+  //Get Spotify Token. SHOULD RUN FIRST
+  const getToken = () => {
     axios
       .post(
         "https://accounts.spotify.com/api/token",
@@ -47,56 +60,44 @@ export default function PopularArtists() {
         console.log(res);
         getSpotifyToken(res.data.access_token);
       });
-  }, []);
+  };
 
-  //Get most popular artists from Last.FM, save to state
   useEffect(() => {
-    axios
-      .get(
-        "https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=106089bc8ef07ebb20e19f75f7557606&limit=10&format=json"
-      )
-      .then((res) => {
-        var resToState = res.data.artists.artist;
-        getPopularArtists(resToState);
-      });
+    var tempArray = [];
+    popularArtists.map((artist) => {
+      axios
+        .get(
+          `https://api.spotify.com/v1/search?query=${encodeURI(
+            artist.name
+          )}&type=artist&market=US&offset=0&limit=1`,
+          tokenHeader
+        )
+        .then((res) => {
+          var artistsObject = {
+            name: artist.name,
+            image: res.data.artists.items[0].images[0].url,
+            id: res.data.artists.items[0].id,
+          };
+          getArtists((artistState) => artistState.concat(artistsObject));
+        })
+        .catch((err) => {
+          console.log(artist.name + " " + err);
+          return null;
+        });
+    });
   }, [spotifyToken]);
 
   useEffect(() => {
-    if (popularArtists === undefined) {
-      return null;
-    } else {
-      var tempArray = [];
-      popularArtists.map((artist) => {
-        axios
-          .get(
-            `https://api.spotify.com/v1/search?query=${encodeURI(
-              artist.name
-            )}&type=artist&market=US&offset=0&limit=1`,
-            tokenHeader
-          )
-          .then((res) => {
-            console.log(res);
-            var artistsObject = {
-              name: artist.name,
-              image: res.data.artists.items[0].images[0].url,
-              id: res.data.artists.items[0].id,
-            };
-            tempArray.push(artistsObject);
-          })
-          .catch((err) => {
-            console.log(artist.name + " " + err);
-            return null;
-          });
-      });
-    }
-    getArtists(tempArray);
-  }, [spotifyToken]);
+    setIsLoading(false);
+  }, [artistState]);
 
   useEffect(() => {
     console.log(artistState);
   }, [artistState]);
 
-  // console.log(artistPics);
+  if (isLoading) {
+    return <div>"Loading...</div>;
+  }
 
   return (
     <>
