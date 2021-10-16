@@ -1,4 +1,29 @@
+import { useHistory, withRouter, Redirect } from "react-router-dom";
+import { useState, useEffect } from "react";
+
 export default function Searchbar() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  let history = useHistory();
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      update();
+    }
+  };
+
+  const handleChange = (val) => {
+    setSearchTerm(val);
+    console.log(val);
+  };
+
+  const update = () => {
+    history.push(`/search/${searchTerm}`);
+  };
+
+  useEffect(() => {
+    console.log(searchTerm);
+  }, [searchTerm]);
   return (
     <>
       <div className="flex justify-end">
@@ -7,6 +32,9 @@ export default function Searchbar() {
           id="search"
           placeholder="Search..."
           type="text"
+          value={searchTerm}
+          onChange={(e) => handleChange(e.target.value)}
+          onKeyUp={handleKeyPress}
         />
       </div>
     </>
