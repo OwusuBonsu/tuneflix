@@ -50,7 +50,7 @@ export default function ArtistPage() {
       const lastFMInfo = res.data.artist;
       getArtistLFM(lastFMInfo);
       setLoading(false);
-    });
+    }).catch((err) => console.log(err));
   }
 
   async function albums(artistID) {
