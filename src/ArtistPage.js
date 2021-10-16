@@ -45,7 +45,7 @@ export default function ArtistPage() {
 
   async function lastfm(name) {
     axios(
-      `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${name}&api_key=106089bc8ef07ebb20e19f75f7557606&format=json`
+      `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${name}&api_key=106089bc8ef07ebb20e19f75f7557606&format=json`
     ).then((res) => {
       const lastFMInfo = res.data.artist;
       getArtistLFM(lastFMInfo);
