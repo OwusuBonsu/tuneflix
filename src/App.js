@@ -1,20 +1,68 @@
-import "./App.css";
-import { useQuery, QueryClient } from "react-query";
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import {
+  Link,
+  BrowserRouter as Router,
+  Route,
+  useHistory,
+  Switch,
+} from "react-router-dom";
+import Homepage from "./Homepage";
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from "recoil";
+import ArtistPage from "./ArtistPage";
+import SongPage from "./SongPage";
+import Searchbar from "./Searchbar";
+import SearchResults from "./SearchResults";
 import axios from "axios";
-import PopularArtists from "./PopularArtists";
+import qs from "qs";
 
 function App() {
-  const { isLoading, error, topArtists } = useQuery("fetchArtists", () =>
-    axios(
-      "https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=106089bc8ef07ebb20e19f75f7557606&format=json"
-    )
+  const spotifyHeader = {
+    headers: {
+      Accept: "application/json",
+    },
+    auth: {
+      username: "ac6d1c45676c42b4920d3b8499e03271",
+      password: "aeea7ec5b4324825b9f007cc73c4f1fc",
+    },
+  };
+  const body = {
+    grant_type: "client_credentials",
+  };
+
+  useEffect(() => {
+    axios
+      .post(
+        "https://accounts.spotify.com/api/token",
+        qs.stringify(body),
+        spotifyHeader
+      )
+      .then((res) => {
+        console.log(res);
+        const token = res.data.access_token;
+
+        localStorage.setItem("spotToken", token);
+      });
+  }, []);
+
+  return (
+    <React.StrictMode>
+      <Router>
+        <Searchbar />
+        <Route exact path="/" component={Homepage} />
+        <Route path="/artist/:artistID" component={ArtistPage} />
+        <Route path="/song/:songID" component={SongPage} />
+        <Route path="/search/:search" component={SearchResults} />
+      </Router>
+    </React.StrictMode>
   );
-  if (isLoading) return "Loading...";
-  if (error) return "An error has occurred: " + error.message;
-
-  console.log(topArtists);
-
-  return <div>{topArtists.data.artists.artist.map}</div>;
 }
 
 export default App;
