@@ -1,3 +1,4 @@
+import "./ArtistPage.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, BrowserRouter as Router, useParams } from "react-router-dom";
@@ -87,7 +88,7 @@ export default function ArtistPage() {
         <div className="flex order-1 justify-center md:h-auto h-36 flex-row md:flex-col md:w-4/12 max-w-full text-center m-10 ">
           <img
             src={artistSpotify.images[0]?.url}
-            className="rounded-full self-start block ml-auto mr-auto min-w-1/2 h-full md:w-full md:h-auto"
+            className="rounded-full self-start block ml-auto mr-auto min-w-1/2 h-full md:w-full md:h-auto md:max-h-full"
           />
           <div className="flex justify-center align-middle flex-col">
             <p className="text-2xl font-bold text-white text-opacity-90 max-w-full">
@@ -103,7 +104,7 @@ export default function ArtistPage() {
           <p className="text-5xl font-bold text-white text-opacity-90 max-w-full">
             About
           </p>
-          {artistLFM.bio?.summary}
+          <div dangerouslySetInnerHTML={{ __html: artistLFM.bio?.summary }} />
           <p className="text-5xl font-bold text-white text-opacity-90 max-w-full">
             Top Tracks
           </p>
