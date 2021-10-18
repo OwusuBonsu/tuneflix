@@ -1,21 +1,13 @@
 import axios from "axios";
-import { useState, useEffect, useCallback } from "react";
-import { useRecoilValue, atom } from "recoil";
+import { useState, useEffect } from "react";
+import { useRecoilValue } from "recoil";
 import qs from "qs";
-import {
-  Link,
-  BrowserRouter as Router,
-  Route,
-  useParams,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { tokenSpotify } from "./App";
 
 export default function SongPage() {
   let { songID } = useParams();
-  const tokenState = atom({
-    key: "tokenState",
-  });
   const token = useRecoilValue(tokenSpotify);
   const [songObject, getSongObject] = useState();
   const [isLoading, setLoading] = useState(true);

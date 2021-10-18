@@ -1,5 +1,4 @@
-import { getChart, listCharts } from "billboard-top-100";
-import { atom, useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Textfit } from "react-textfit";

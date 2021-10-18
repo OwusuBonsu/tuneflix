@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams, withRouter } from "react-router";
+import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { atom, useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { tokenSpotify } from "./App";
 
 export default function SearchResults() {

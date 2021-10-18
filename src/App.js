@@ -1,20 +1,8 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect } from "react";
+
 import "./index.css";
-import {
-  Link,
-  BrowserRouter as Router,
-  Route,
-  useHistory,
-  Switch,
-} from "react-router-dom";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-} from "recoil";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { atom, useRecoilState } from "recoil";
 import Homepage from "./Homepage";
 import ArtistPage from "./ArtistPage";
 import SongPage from "./SongPage";

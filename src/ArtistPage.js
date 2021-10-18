@@ -1,13 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useRecoilState, atom } from "recoil";
-import qs from "qs";
-import {
-  Link,
-  BrowserRouter as Router,
-  Route,
-  useParams,
-} from "react-router-dom";
+import { Link, BrowserRouter as Router, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { tokenSpotify } from "./App";
 

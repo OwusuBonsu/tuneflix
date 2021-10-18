@@ -1,7 +1,6 @@
 import axios from "axios";
-import qs from "qs";
-import { useCallback, useState, useEffect, useMemo } from "react";
-import { atom, useRecoilState, useRecoilValue } from "recoil";
+import { useState, useEffect } from "react";
+import { useRecoilValue } from "recoil";
 import { Textfit } from "react-textfit";
 import { Link } from "react-router-dom";
 import { tokenSpotify } from "./App";
@@ -33,6 +32,9 @@ export default function PopularArtists() {
       .then((res) => {
         getPopularArtists(res.data.artists.artist);
         populateArtists(res.data.artists.artist);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, [token]);
 
@@ -52,7 +54,6 @@ export default function PopularArtists() {
             id: res.data.artists.items[0].id,
           };
           getArtists((artistState) => artistState.concat(artistsObject));
-          // console.log(artistsObject);
           console.log(artistState);
         })
         .catch((err) => {

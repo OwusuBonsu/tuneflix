@@ -1,12 +1,13 @@
 import App from "./App";
-import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
+import Me from "./Me";
 
 ReactDOM.render(
   <RecoilRoot>
     <div className="h-full">
       <App />
+      <Me />
     </div>
   </RecoilRoot>,
 
