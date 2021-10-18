@@ -104,7 +104,10 @@ export default function ArtistPage() {
           <p className="text-5xl font-bold text-white text-opacity-90 max-w-full">
             About
           </p>
-          <div dangerouslySetInnerHTML={{ __html: artistLFM.bio?.summary }} />
+          <div
+            className="summary"
+            dangerouslySetInnerHTML={{ __html: artistLFM.bio?.summary }}
+          />
           <p className="text-5xl font-bold text-white text-opacity-90 max-w-full">
             Top Tracks
           </p>
