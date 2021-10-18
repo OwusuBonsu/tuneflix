@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import {
@@ -8,7 +8,6 @@ import {
   useHistory,
   Switch,
 } from "react-router-dom";
-import Homepage from "./Homepage";
 import {
   RecoilRoot,
   atom,
@@ -16,6 +15,7 @@ import {
   useRecoilState,
   useRecoilValue,
 } from "recoil";
+import Homepage from "./Homepage";
 import ArtistPage from "./ArtistPage";
 import SongPage from "./SongPage";
 import Searchbar from "./Searchbar";
@@ -23,7 +23,12 @@ import SearchResults from "./SearchResults";
 import axios from "axios";
 import qs from "qs";
 
-function App() {
+export const tokenSpotify = atom({
+  key: "tokenSpotify",
+  default: "",
+});
+
+export function App() {
   const spotifyHeader = {
     headers: {
       Accept: "application/json",
@@ -37,6 +42,8 @@ function App() {
     grant_type: "client_credentials",
   };
 
+  const [token, getToken] = useRecoilState(tokenSpotify);
+
   useEffect(() => {
     axios
       .post(
@@ -45,23 +52,23 @@ function App() {
         spotifyHeader
       )
       .then((res) => {
-        console.log(res);
         const token = res.data.access_token;
-
-        localStorage.setItem("spotToken", token);
+        getToken(token);
       });
   }, []);
 
+  useEffect(() => {
+    console.log(token);
+  }, [token]);
+
   return (
-    <React.StrictMode>
-      <Router>
-        <Searchbar />
-        <Route exact path="/" component={Homepage} />
-        <Route path="/artist/:artistID" component={ArtistPage} />
-        <Route path="/song/:songID" component={SongPage} />
-        <Route path="/search/:search" component={SearchResults} />
-      </Router>
-    </React.StrictMode>
+    <Router>
+      <Searchbar />
+      <Route exact path="/" component={Homepage} />
+      <Route path="/artist/:artistID" component={ArtistPage} />
+      <Route path="/song/:songID" component={SongPage} />
+      <Route path="/search/:search" component={SearchResults} />
+    </Router>
   );
 }
 

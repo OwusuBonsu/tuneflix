@@ -4,44 +4,46 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Textfit } from "react-textfit";
 import { Link } from "react-router-dom";
+import { tokenSpotify } from "./App";
 
 export default function TopSingles() {
   const [songs, getSongs] = useState([]);
-  const spotifyToken = localStorage.getItem("spotToken");
+  const token = useRecoilValue(tokenSpotify);
 
   const tokenHeader = {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: "Bearer " + spotifyToken,
+      Authorization: "Bearer " + token,
     },
   };
 
   useEffect(() => {
-    if (spotifyToken === undefined) {
-      return null;
-    } else {
-      var tempSongArray = [];
-      axios
-        .get(
-          `https://api.spotify.com/v1/playlists/6UeSakyzhiEt4NB3UAd6NQ/tracks?limit=10&offset=0`,
-          tokenHeader
-        )
-        .then((res) => {
-          const songList = res.data.items;
-          songList.map((song) => {
-            const songObject = {
-              name: song.track.name,
-              cover: song.track.album.images[0].url,
-              id: song.track.id,
-            };
-            tempSongArray.push(songObject);
-          });
-          getSongs(tempSongArray);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [spotifyToken]);
+    console.log(token);
+  }, [token]);
+
+  useEffect(() => {
+    var tempSongArray = [];
+    axios
+      .get(
+        `https://api.spotify.com/v1/playlists/6UeSakyzhiEt4NB3UAd6NQ/tracks?limit=10&offset=0`,
+        tokenHeader
+      )
+      .then((res) => {
+        const songList = res.data.items;
+        songList.map((song) => {
+          const songObject = {
+            name: song.track.name,
+            cover: song.track.album.images[0].url,
+            id: song.track.id,
+          };
+          tempSongArray.push(songObject);
+          console.log(tempSongArray);
+        });
+        getSongs(tempSongArray);
+      })
+      .catch((err) => console.log(err));
+  }, [token]);
 
   return (
     <>

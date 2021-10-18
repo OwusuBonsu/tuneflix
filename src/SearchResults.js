@@ -3,24 +3,25 @@ import { useEffect, useState } from "react";
 import { useParams, withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import { atom, useRecoilState, useRecoilValue } from "recoil";
+import { tokenSpotify } from "./App";
 
 export default function SearchResults() {
   const { search } = useParams();
   const [artists, getArtists] = useState({});
   const [tracks, getTracks] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const spotifyToken = localStorage.getItem("spotToken");
+  const token = useRecoilValue(tokenSpotify);
 
   const tokenHeader = {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: "Bearer " + spotifyToken,
+      Authorization: "Bearer " + token,
     },
   };
 
   useEffect(() => {
-    if (spotifyToken === undefined) {
+    if (token === undefined) {
       return null;
     } else {
       axios

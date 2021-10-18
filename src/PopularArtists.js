@@ -4,37 +4,37 @@ import { useCallback, useState, useEffect, useMemo } from "react";
 import { atom, useRecoilState, useRecoilValue } from "recoil";
 import { Textfit } from "react-textfit";
 import { Link } from "react-router-dom";
+import { tokenSpotify } from "./App";
 
 export default function PopularArtists() {
   const [artistState, getArtists] = useState([]);
   const [popularArtists, getPopularArtists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const spotifyToken = localStorage.getItem("spotToken");
+  const token = useRecoilValue(tokenSpotify);
 
   const tokenHeader = {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: "Bearer " + spotifyToken,
+      Authorization: "Bearer " + token,
     },
   };
 
+  useEffect(() => {
+    console.log(token);
+  }, [token]);
+
   //Get most popular artists from Last.FM, save to state
   useEffect(() => {
-    if (spotifyToken === undefined) {
-      return null;
-    } else {
-      axios
-        .get(
-          "https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=106089bc8ef07ebb20e19f75f7557606&limit=10&format=json"
-        )
-        .then((res) => {
-          getPopularArtists(res.data.artists.artist);
-          console.log(res.data.artists.artist);
-          populateArtists(res.data.artists.artist);
-        });
-    }
-  }, []);
+    axios
+      .get(
+        "https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=106089bc8ef07ebb20e19f75f7557606&limit=10&format=json"
+      )
+      .then((res) => {
+        getPopularArtists(res.data.artists.artist);
+        populateArtists(res.data.artists.artist);
+      });
+  }, [token]);
 
   const populateArtists = (artistArray) => {
     artistArray.map((artist) => {
@@ -63,7 +63,7 @@ export default function PopularArtists() {
     setIsLoading(false);
   };
 
-  if (isLoading || spotifyToken === undefined) {
+  if (isLoading || token === undefined) {
     return <div>"Loading...</div>;
   }
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
-import { useRecoilState, atom } from "recoil";
+import { useRecoilValue, atom } from "recoil";
 import qs from "qs";
 import {
   Link,
@@ -9,15 +9,14 @@ import {
   useParams,
 } from "react-router-dom";
 import ReactPlayer from "react-player";
-import { getByTestId } from "@testing-library/dom";
+import { tokenSpotify } from "./App";
 
 export default function SongPage() {
   let { songID } = useParams();
   const tokenState = atom({
     key: "tokenState",
   });
-  // const [spotifyToken, getSpotifyToken] = useRecoilState(tokenState);
-  const spotifyToken = localStorage.getItem("spotToken");
+  const token = useRecoilValue(tokenSpotify);
   const [songObject, getSongObject] = useState();
   const [isLoading, setLoading] = useState(true);
   const [vidID, getVidID] = useState("");
@@ -38,11 +37,11 @@ export default function SongPage() {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: "Bearer " + spotifyToken,
+      Authorization: "Bearer " + token,
     },
   };
 
-  if (!spotifyToken) {
+  if (!token) {
     axios
       .post(
         "https://accounts.spotify.com/api/token",
@@ -67,7 +66,7 @@ export default function SongPage() {
         console.log(err);
       });
     // getYT();
-  }, [spotifyToken]);
+  }, [token]);
 
   useEffect(() => {
     console.log(songObject);
@@ -91,7 +90,7 @@ export default function SongPage() {
     }
   }, [songObject]);
 
-  if (isLoading || spotifyToken === undefined) {
+  if (isLoading || token === undefined) {
     return <div>Loading...</div>;
   }
 

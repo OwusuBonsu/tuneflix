@@ -8,27 +8,27 @@ import {
   Route,
   useParams,
 } from "react-router-dom";
-import { Textfit } from "react-textfit";
-import Div100vh from "react-div-100vh";
+import { useRecoilValue } from "recoil";
+import { tokenSpotify } from "./App";
 
 export default function ArtistPage() {
   let { artistID } = useParams();
-  const spotifyToken = localStorage.getItem("spotToken");
   const [artistSpotify, getArtistSpotify] = useState({});
   const [artistLFM, getArtistLFM] = useState({});
   const [artistTopTracks, getTopTracks] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const token = useRecoilValue(tokenSpotify);
 
   const tokenHeader = {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: "Bearer " + spotifyToken,
+      Authorization: "Bearer " + token,
     },
   };
 
   useEffect(() => {
-    if (spotifyToken === undefined) {
+    if (token === undefined) {
       return null;
     } else {
       axios(`https://api.spotify.com/v1/artists/${artistID}`, tokenHeader).then(
@@ -41,16 +41,18 @@ export default function ArtistPage() {
         }
       );
     }
-  }, [spotifyToken]);
+  }, [token]);
 
   async function lastfm(name) {
     axios(
       `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${name}&api_key=106089bc8ef07ebb20e19f75f7557606&format=json`
-    ).then((res) => {
-      const lastFMInfo = res.data.artist;
-      getArtistLFM(lastFMInfo);
-      setLoading(false);
-    }).catch((err) => console.log(err));
+    )
+      .then((res) => {
+        const lastFMInfo = res.data.artist;
+        getArtistLFM(lastFMInfo);
+        setLoading(false);
+      })
+      .catch((err) => console.log(err));
   }
 
   async function albums(artistID) {
