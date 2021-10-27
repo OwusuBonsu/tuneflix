@@ -93,6 +93,7 @@ export default function SongPage() {
           <img
             src={songObject.album.images[0].url}
             className="rounded-3xl self-start block ml-auto mr-auto min-w-1/2 h-full md:w-full md:h-auto"
+            alt={songObject.name}
           />
           <div className="flex justify-center align-middle flex-col">
             <p className="text-2xl font-bold text-white text-opacity-90 max-w-full">

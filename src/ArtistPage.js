@@ -1,7 +1,7 @@
 import "./ArtistPage.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link, BrowserRouter as Router, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { tokenSpotify } from "./App";
 
@@ -25,15 +25,17 @@ export default function ArtistPage() {
     if (token === undefined) {
       return null;
     } else {
-      axios(`https://api.spotify.com/v1/artists/${artistID}`, tokenHeader).then(
-        (res) => {
+      axios(`https://api.spotify.com/v1/artists/${artistID}`, tokenHeader)
+        .then((res) => {
           console.log(res);
           getArtistSpotify(res.data);
           lastfm(res.data.name);
           albums(artistID);
           topTracks(artistID);
-        }
-      );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [token]);
 
@@ -74,10 +76,6 @@ export default function ArtistPage() {
     });
   }
 
-  useEffect(() => {
-    console.log(artistTopTracks);
-  }, [artistTopTracks]);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -89,6 +87,7 @@ export default function ArtistPage() {
           <img
             src={artistSpotify.images[0]?.url}
             className="rounded-full self-start block ml-auto mr-auto min-w-1/2 h-full md:w-full md:h-auto md:max-h-full"
+            alt={artistSpotify.name}
           />
           <div className="flex justify-center align-middle flex-col">
             <p className="text-2xl font-bold text-white text-opacity-90 max-w-full">
@@ -116,7 +115,11 @@ export default function ArtistPage() {
               <Link to={`/song/${track.id}`}>
                 <div className="flex md:inline-block md:align-top md:w-1/6 flex-row md:flex-col ">
                   <div className="md:order-1 w-1/4 md:w-full">
-                    <img className="rounded-lg " src={track.img} />
+                    <img
+                      className="rounded-lg "
+                      src={track.img}
+                      alt={track.title}
+                    />
                   </div>
                   <div className=" my-auto w-3/4 h-full md:w-full">
                     <p className=" text-center align-text-bottom">
