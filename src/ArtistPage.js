@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { tokenSpotify } from "./App";
+import { tokenSpotify, tokenHeaderr } from "./App";
 
 export default function ArtistPage() {
   let { artistID } = useParams();
@@ -12,7 +12,6 @@ export default function ArtistPage() {
   const [artistTopTracks, getTopTracks] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const token = useRecoilValue(tokenSpotify);
-
   const tokenHeader = {
     headers: {
       Accept: "application/json",
@@ -39,7 +38,7 @@ export default function ArtistPage() {
     }
   }, [token]);
 
-  async function lastfm(name) {
+  const lastfm = (name) => {
     axios(
       `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${name}&api_key=106089bc8ef07ebb20e19f75f7557606&format=json`
     )
@@ -49,16 +48,16 @@ export default function ArtistPage() {
         setLoading(false);
       })
       .catch((err) => console.log(err));
-  }
+  };
 
-  async function albums(artistID) {
+  const albums = (artistID) => {
     axios(
       `https://api.spotify.com/v1/artists/${artistID}/albums?market=US&include_groups=album`,
       tokenHeader
     ).then((res) => console.log(res));
-  }
+  };
 
-  async function topTracks(artistID) {
+  const topTracks = (artistID) => {
     axios(
       `https://api.spotify.com/v1/artists/${artistID}/top-tracks?market=US`,
       tokenHeader
@@ -74,7 +73,7 @@ export default function ArtistPage() {
       });
       getTopTracks(allTopTracks.slice(0, 5));
     });
-  }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
