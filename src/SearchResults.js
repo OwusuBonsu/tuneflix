@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { tokenSpotify } from "./App";
+import { tokenSpotify, tokenHeaderr } from "./App";
 
 export default function SearchResults() {
   const { search } = useParams();
@@ -11,7 +11,6 @@ export default function SearchResults() {
   const [tracks, getTracks] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const token = useRecoilValue(tokenSpotify);
-
   const tokenHeader = {
     headers: {
       Accept: "application/json",
@@ -54,20 +53,23 @@ export default function SearchResults() {
         <div className="flex flex-row flex-shrink flex-wrap">
           {artists.map((artist) => (
             <Link to={`/artist/${artist.id}`} key={artist.id}>
-              <div className="flex flex-col w-full m-4">
-                <div>
+              <div className="flex flex-col w-full m-4 justify-center">
+                <div className="flex justify-center">
                   <img
                     src={artist.images[0]?.url}
                     className="rounded-full max-h-20"
                     alt={artist.name}
                   />
                 </div>
-                <div className="text-white">{artist.name} </div>
+                <div className="flex justify-center text-white">
+                  {artist.name}{" "}
+                </div>
                 <br />
               </div>
             </Link>
           ))}
         </div>
+
         <p className="text-5xl font-extrabold text-white mx-3 ">Tracks</p>
         <div className="flex flex-row flex-shrink flex-wrap">
           {tracks.map((track) => (
