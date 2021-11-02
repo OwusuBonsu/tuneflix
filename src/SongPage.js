@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import qs from "qs";
 import { useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
@@ -12,19 +12,6 @@ export default function SongPage() {
   const [songObject, getSongObject] = useState();
   const [isLoading, setLoading] = useState(true);
   const [vidID, getVidID] = useState("");
-
-  const spotifyHeader = {
-    headers: {
-      Accept: "application/json",
-    },
-    auth: {
-      username: "ac6d1c45676c42b4920d3b8499e03271",
-      password: "aeea7ec5b4324825b9f007cc73c4f1fc",
-    },
-  };
-  const body = {
-    grant_type: "client_credentials",
-  };
   const tokenHeader = {
     headers: {
       Accept: "application/json",
@@ -32,19 +19,6 @@ export default function SongPage() {
       Authorization: "Bearer " + token,
     },
   };
-
-  if (!token) {
-    axios
-      .post(
-        "https://accounts.spotify.com/api/token",
-        qs.stringify(body),
-        spotifyHeader
-      )
-      .then((res) => {
-        console.log(res);
-        localStorage.setItem("spotToken", res.data.access_token);
-      });
-  }
 
   useEffect(() => {
     axios(`https://api.spotify.com/v1/tracks/${songID}`, tokenHeader)
@@ -57,12 +31,7 @@ export default function SongPage() {
       .catch((err) => {
         console.log(err);
       });
-    // getYT();
   }, [token]);
-
-  useEffect(() => {
-    console.log(songObject);
-  }, [songObject]);
 
   useEffect(() => {
     if (songObject === undefined) {
@@ -105,7 +74,7 @@ export default function SongPage() {
           </div>
         </div>
 
-        <div className="flex-shrink w-full md:w-8/12 order-2 overflow-y-auto text-white py-3">
+        <div className="flex-shrink w-full md:w-8/12 order-2 overflow-y-hidden text-white py-3">
           <p className="text-5xl font-bold text-white text-opacity-90 max-w-full">
             Video
           </p>
